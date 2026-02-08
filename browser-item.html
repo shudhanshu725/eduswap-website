@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse Items - EduSwap</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <h2>📚 EduSwap</h2>
+            </div>
+            <ul class="nav-links" id="mainNav">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="browse-items.html">Browse</a></li>
+                <li><a href="login.html">Login</a></li>
+                <li><a href="register.html" class="btn-primary">Sign Up</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Browse Section -->
+    <section class="browse-section">
+        <div class="container">
+            <div class="browse-header">
+                <h1>Browse Available Items</h1>
+                <p>Find the college resources you need</p>
+            </div>
+
+            <!-- Search and Filter Bar -->
+            <div class="filter-bar">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Search items...">
+                </div>
+                
+                <div class="filter-group">
+                    <select id="categoryFilter">
+                        <option value="all">All Categories</option>
+                        <option value="Books">Books</option>
+                        <option value="Notes">Notes</option>
+                        <option value="Calculator">Calculator</option>
+                        <option value="Lab Equipment">Lab Equipment</option>
+                        <option value="Electronics">Electronics</option>
+                        <option value="Other">Other</option>
+                    </select>
+
+                    <select id="priceFilter">
+                        <option value="all">All Prices</option>
+                        <option value="0-500">Under ₹500</option>
+                        <option value="500-1000">₹500 - ₹1000</option>
+                        <option value="1000-2000">₹1000 - ₹2000</option>
+                        <option value="2000+">Above ₹2000</option>
+                    </select>
+
+                    <select id="conditionFilter">
+                        <option value="all">All Conditions</option>
+                        <option value="Brand New">Brand New</option>
+                        <option value="Like New">Like New</option>
+                        <option value="Good">Good</option>
+                        <option value="Fair">Fair</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Items Count -->
+            <div class="items-count">
+                <p>Showing <span id="itemCount">0</span> items</p>
+            </div>
+
+            <!-- No Items Message -->
+            <div id="noItemsFound" class="no-items" style="display: none;">
+                <p>📦 No items found matching your criteria.</p>
+                <p>Try adjusting your filters or search terms.</p>
+            </div>
+
+            <!-- Items Grid -->
+            <div id="browseItemsGrid" class="browse-items-grid">
+                <!-- Items will be loaded here dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Item Detail Modal -->
+    <div id="itemModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div id="modalBody">
+                <!-- Item details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 EduSwap. Made with ❤️ for students, by students.</p>
+        </div>
+    </footer>
+
+    <script src="js/auth.js"></script>
+    <script src="js/browse.js"></script>
+</body>
+</html>

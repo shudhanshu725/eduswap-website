@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Dashboard - EduSwap</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Navigation Bar (Logged In Version) -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <h2>📚 EduSwap</h2>
+            </div>
+            <ul class="nav-links">
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="browse-items.html">Browse</a></li>
+                <li><a href="post-item.html">Post Item</a></li>
+                <li><span id="userNameDisplay"></span></li>
+                <li><button onclick="logout()" class="btn-primary">Logout</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Dashboard Section -->
+    <section class="dashboard-section">
+        <div class="container">
+            <div class="dashboard-header">
+                <h1>My Dashboard</h1>
+                <a href="post-item.html" class="btn-primary">+ Post New Item</a>
+            </div>
+
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <h3 id="totalItems">0</h3>
+                    <p>Total Items Posted</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="activeItems">0</h3>
+                    <p>Active Listings</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="viewCount">0</h3>
+                    <p>Total Views</p>
+                </div>
+            </div>
+
+            <div class="dashboard-content">
+                <h2>My Posted Items</h2>
+                
+                <div id="noItemsMessage" class="no-items">
+                    <p>📦 You haven't posted any items yet.</p>
+                    <a href="post-item.html" class="btn-primary">Post Your First Item</a>
+                </div>
+
+                <div id="itemsGrid" class="items-grid">
+                    <!-- Items will be dynamically loaded here -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="js/auth.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
