@@ -221,20 +221,38 @@ footer {
     padding: 2rem 0;
 }
 
+/* Custom Cursor */
+#cursor {
+    position: fixed;
+    width: 20px;
+    height: 20px;
+    background-color: #4CAF50;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.1s ease, background-color 0.1s ease;
+    mix-blend-mode: difference;
+}
+
+#cursor.hover {
+    transform: scale(1.5);
+    background-color: #45a049;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .nav-links {
         gap: 1rem;
     }
-    
+
     .hero-content h1 {
         font-size: 2rem;
     }
-    
+
     .hero-content p {
         font-size: 1rem;
     }
-    
+
     .hero-buttons {
         flex-direction: column;
     }

@@ -100,5 +100,35 @@
             <p>&copy; 2024 EduSwap. Made with ❤️ for students, by students.</p>
         </div>
     </footer>
+
+    <!-- Custom Cursor -->
+    <div id="cursor"></div>
+
+    <script>
+        const cursor = document.getElementById('cursor');
+        let mouseX = 0, mouseY = 0;
+        let cursorX = 0, cursorY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        function updateCursor() {
+            cursorX += (mouseX - cursorX) * 0.1;
+            cursorY += (mouseY - cursorY) * 0.1;
+            cursor.style.left = cursorX + 'px';
+            cursor.style.top = cursorY + 'px';
+            requestAnimationFrame(updateCursor);
+        }
+        updateCursor();
+
+        // Hover effects
+        const hoverElements = document.querySelectorAll('a, button, .btn-primary, .btn-secondary, .btn-large, .feature-card, .step');
+        hoverElements.forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+        });
+    </script>
 </body>
 </html>
