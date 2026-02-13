@@ -1,14 +1,19 @@
 // Load user data and display name
 function loadUserData() {
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    if (currentUser) {
-        document.getElementById('userNameDisplay').textContent = `Hi, ${currentUser.name}`;
+    const userNameDisplay = document.getElementById('userNameDisplay');
+    if (currentUser && userNameDisplay) {
+        userNameDisplay.textContent = `Hi, ${currentUser.name}`;
     }
 }
 
 // Load user's posted items
 function loadUserItems() {
-    const items = JSON.parse(localStorage.getItem('userItems')) || [];
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    const allItems = JSON.parse(localStorage.getItem('allItems')) || JSON.parse(localStorage.getItem('userItems')) || [];
+    const items = currentUser
+        ? allItems.filter(item => item.postedByEmail === currentUser.email)
+        : [];
     const itemsGrid = document.getElementById('itemsGrid');
     const noItemsMessage = document.getElementById('noItemsMessage');
     
@@ -66,16 +71,34 @@ function createItemCard(item, index) {
 // Delete item function
 function deleteItem(index) {
     if (confirm('Are you sure you want to delete this item?')) {
-        let items = JSON.parse(localStorage.getItem('userItems')) || [];
-        items.splice(index, 1);
-        localStorage.setItem('userItems', JSON.stringify(items));
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        let allItems = JSON.parse(localStorage.getItem('allItems')) || [];
+
+        const currentUserItems = currentUser
+            ? allItems.filter(item => item.postedByEmail === currentUser.email)
+            : [];
+
+        const itemToDelete = currentUserItems[index];
+        if (!itemToDelete) return;
+
+        allItems = allItems.filter(item => item.id !== itemToDelete.id);
+        localStorage.setItem('allItems', JSON.stringify(allItems));
         loadUserItems();
     }
 }
 
-// Edit item function (we'll implement this later)
+// Edit item function
 function editItem(index) {
-    alert('Edit functionality coming soon! For now, you can delete and re-post the item.');
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    const allItems = JSON.parse(localStorage.getItem('allItems')) || [];
+    const currentUserItems = currentUser
+        ? allItems.filter(item => item.postedByEmail === currentUser.email)
+        : [];
+
+    const itemToEdit = currentUserItems[index];
+    if (!itemToEdit) return;
+
+    window.location.href = `post-item.html?edit=${itemToEdit.id}`;
 }
 
 // Load data on page load

@@ -1,3 +1,24 @@
+const USERS_STORAGE_KEY = 'users';
+
+function getUsers() {
+    const users = JSON.parse(localStorage.getItem(USERS_STORAGE_KEY)) || [];
+    if (users.length > 0) return users;
+
+    // Backward compatibility for previous single-user storage
+    const legacyUser = JSON.parse(localStorage.getItem('tempUser'));
+    if (legacyUser) {
+        saveUsers([legacyUser]);
+        localStorage.removeItem('tempUser');
+        return [legacyUser];
+    }
+
+    return [];
+}
+
+function saveUsers(users) {
+    localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
+}
+
 // Register Form Handler
 const registerForm = document.getElementById('registerForm');
 
@@ -39,20 +60,29 @@ if (registerForm) {
             return;
         }
         
-        // For now, just show success (we'll connect to backend later)
-        successMsg.textContent = 'Registration successful! Redirecting to login...';
-        successMsg.classList.add('show');
-        
-        // Store user data temporarily in localStorage (we'll replace this with backend later)
+        const users = getUsers();
+        const emailExists = users.some(user => user.email.toLowerCase() === email.toLowerCase());
+
+        if (emailExists) {
+            errorMsg.textContent = 'An account with this email already exists';
+            errorMsg.classList.add('show');
+            return;
+        }
+
+        // Store user data locally (for demo app)
         const userData = {
             name,
             email,
             college,
             phone,
-            password // In real app, NEVER store passwords in localStorage!
+            password // In real app, NEVER store plain passwords in localStorage!
         };
-        
-        localStorage.setItem('tempUser', JSON.stringify(userData));
+
+        users.push(userData);
+        saveUsers(users);
+
+        successMsg.textContent = 'Registration successful! Redirecting to login...';
+        successMsg.classList.add('show');
         
         // Redirect to login after 2 seconds
         setTimeout(() => {
@@ -78,19 +108,19 @@ if (loginForm) {
         errorMsg.classList.remove('show');
         successMsg.classList.remove('show');
         
-        // Get stored user data (temporary - we'll use backend later)
-        const storedUser = localStorage.getItem('tempUser');
-        
-        if (!storedUser) {
+        const users = getUsers();
+
+        if (users.length === 0) {
             errorMsg.textContent = 'No account found. Please register first.';
             errorMsg.classList.add('show');
             return;
         }
-        
-        const userData = JSON.parse(storedUser);
-        
-        // Check credentials
-        if (email === userData.email && password === userData.password) {
+
+        const userData = users.find(
+            user => user.email.toLowerCase() === email.toLowerCase() && user.password === password
+        );
+
+        if (userData) {
             successMsg.textContent = 'Login successful! Redirecting to dashboard...';
             successMsg.classList.add('show');
             
@@ -129,5 +159,37 @@ function logout() {
     window.location.href = 'index.html';
 }
 
+// Update navigation based on login status
+function updateNavigation() {
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    const navElement = document.getElementById('mainNav');
+    
+    if (!navElement) return;
+    
+    if (isLoggedIn && currentUser) {
+        // Logged in - show Home, Dashboard, Browse, Post Item, and Logout
+        navElement.innerHTML = `
+            <li><a href="index.html">Home</a></li>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="browser-item.html">Browse</a></li>
+            <li><a href="post-item.html">Post Item</a></li>
+            <li><span style="color: #2ecc71; font-weight: bold;">Hi, ${currentUser.name}</span></li>
+            <li><button onclick="logout()" class="btn-primary" style="padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer;">Logout</button></li>
+        `;
+    } else {
+        // Not logged in - show Home, Browse, Login, and Sign Up
+        navElement.innerHTML = `
+            <li><a href="index.html">Home</a></li>
+            <li><a href="browser-item.html">Browse</a></li>
+            <li><a href="login.html">Login</a></li>
+            <li><a href="register.html" class="btn-primary">Sign Up</a></li>
+        `;
+    }
+}
+
 // Run auth check on page load
-checkAuth();
+document.addEventListener('DOMContentLoaded', () => {
+    checkAuth();
+    updateNavigation();
+});

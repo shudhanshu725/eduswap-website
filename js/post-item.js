@@ -6,6 +6,41 @@ function loadUserName() {
     }
 }
 
+function getAllItems() {
+    return JSON.parse(localStorage.getItem('allItems')) || [];
+}
+
+function getEditItemId() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('edit');
+}
+
+function loadItemForEditing() {
+    const editItemId = getEditItemId();
+    if (!editItemId) return;
+
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    const allItems = getAllItems();
+    const item = allItems.find(i => String(i.id) === String(editItemId));
+
+    if (!item || !currentUser || item.postedByEmail !== currentUser.email) {
+        window.location.href = 'dashboard.html';
+        return;
+    }
+
+    document.getElementById('itemTitle').value = item.title || '';
+    document.getElementById('itemCategory').value = item.category || '';
+    document.getElementById('itemDescription').value = item.description || '';
+    document.getElementById('itemPrice').value = item.price || '';
+    document.getElementById('itemCondition').value = item.condition || '';
+    document.getElementById('contactMethod').value = item.contactMethod || '';
+
+    const heading = document.querySelector('.post-item-container h1');
+    const submitBtn = document.querySelector('#postItemForm button[type="submit"]');
+    if (heading) heading.textContent = 'Edit Item';
+    if (submitBtn) submitBtn.textContent = 'Update Item';
+}
+
 // Post Item Form Handler
 const postItemForm = document.getElementById('postItemForm');
 
@@ -42,42 +77,64 @@ if (postItemForm) {
             return;
         }
         
-        // Get current user
         const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+        if (!currentUser) {
+            errorMsg.textContent = 'Please login before posting an item';
+            errorMsg.classList.add('show');
+            return;
+        }
         
-        // Create item object
-        const newItem = {
-            id: Date.now(), // Simple unique ID
-            title,
-            category,
-            description,
-            price,
-            condition,
-            contactMethod,
-            postedBy: currentUser.name,
-            postedByEmail: currentUser.email,
-            postedByPhone: currentUser.phone,
-            college: currentUser.college,
-            datePosted: new Date().toLocaleDateString(),
-            views: 0
-        };
-        
-        // Get existing items or create empty array
-        let items = JSON.parse(localStorage.getItem('userItems')) || [];
-        
-        // Add new item
-        items.push(newItem);
-        
-        // Save to localStorage
-        localStorage.setItem('userItems', JSON.stringify(items));
-        
-        // Also save to all items (for browse page)
-        let allItems = JSON.parse(localStorage.getItem('allItems')) || [];
-        allItems.push(newItem);
+        const editItemId = getEditItemId();
+        let allItems = getAllItems();
+
+        if (editItemId) {
+            const itemIndex = allItems.findIndex(i => String(i.id) === String(editItemId));
+
+            if (itemIndex === -1 || allItems[itemIndex].postedByEmail !== currentUser.email) {
+                errorMsg.textContent = 'You cannot edit this item.';
+                errorMsg.classList.add('show');
+                return;
+            }
+
+            allItems[itemIndex] = {
+                ...allItems[itemIndex],
+                title,
+                category,
+                description,
+                price,
+                condition,
+                contactMethod,
+                postedBy: currentUser.name,
+                postedByPhone: currentUser.phone,
+                college: currentUser.college
+            };
+        } else {
+            // Create item object
+            const newItem = {
+                id: Date.now(), // Simple unique ID
+                title,
+                category,
+                description,
+                price,
+                condition,
+                contactMethod,
+                postedBy: currentUser.name,
+                postedByEmail: currentUser.email,
+                postedByPhone: currentUser.phone,
+                college: currentUser.college,
+                datePosted: new Date().toLocaleDateString(),
+                views: 0
+            };
+            allItems.push(newItem);
+        }
+
         localStorage.setItem('allItems', JSON.stringify(allItems));
         
         // Show success message
-        successMsg.textContent = 'Item posted successfully! Redirecting to dashboard...';
+        successMsg.textContent = editItemId
+            ? 'Item updated successfully! Redirecting to dashboard...'
+            : 'Item posted successfully! Redirecting to dashboard...';
         successMsg.classList.add('show');
         
         // Redirect to dashboard after 2 seconds
@@ -88,4 +145,7 @@ if (postItemForm) {
 }
 
 // Load user name on page load
-document.addEventListener('DOMContentLoaded', loadUserName);
+document.addEventListener('DOMContentLoaded', () => {
+    loadUserName();
+    loadItemForEditing();
+});
