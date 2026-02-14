@@ -102,12 +102,46 @@ function showItemDetails(itemId) {
                         ? `<p>Email: <a href="mailto:${item.postedByEmail}">${item.postedByEmail}</a></p><p>Phone: ${item.postedByPhone}</p>`
                         : `<p>Phone: ${item.postedByPhone}</p>`}
             </div>
-            
-            <button class="btn-primary" onclick="closeModal()">Close</button>
+
+            <div class="modal-actions">
+                <button class="btn-primary" onclick="openChatWithSeller('${item.id}')">Chat with Seller</button>
+                <button class="btn-secondary" onclick="closeModal()">Close</button>
+            </div>
         </div>
     `;
     
     modal.style.display = 'block';
+}
+
+function openChatWithSeller(itemId) {
+    const allItems = loadAllItems();
+    const item = allItems.find(i => String(i.id) === String(itemId));
+    const currentUser = JSON.parse(sessionStorage.getItem('currentUser')) || JSON.parse(localStorage.getItem('currentUser'));
+    const isLoggedIn = sessionStorage.getItem('isLoggedIn') || localStorage.getItem('isLoggedIn');
+
+    if (!item) return;
+
+    if (!item.postedByEmail) {
+        alert('Seller email is missing for this listing. Please contact via phone/email details.');
+        return;
+    }
+
+    if (!isLoggedIn || !currentUser) {
+        alert('Please login to chat with the seller.');
+        window.location.href = 'login.html';
+        return;
+    }
+
+    if (currentUser.email.toLowerCase() === item.postedByEmail.toLowerCase()) {
+        alert('This is your own listing.');
+        return;
+    }
+
+    const params = new URLSearchParams({
+        user: item.postedByEmail,
+        item: String(item.id)
+    });
+    window.location.href = `chat.html?${params.toString()}`;
 }
 
 // Close modal

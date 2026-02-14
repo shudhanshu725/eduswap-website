@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat - EduSwap</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <h2>EduSwap</h2>
+            </div>
+            <ul class="nav-links" id="mainNav">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="browser-item.html">Browse</a></li>
+                <li><a href="chat.html">Chat</a></li>
+                <li><a href="post-item.html">Post Item</a></li>
+                <li><button onclick="logout()" class="btn-primary">Logout</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="chat-page">
+        <div class="container">
+            <div class="chat-layout">
+                <aside class="chat-sidebar">
+                    <h2>Contacts</h2>
+                    <p class="chat-helper">Select a user to start chatting.</p>
+                    <div id="chatUserList" class="chat-user-list"></div>
+                </aside>
+
+                <main class="chat-main">
+                    <div class="chat-header">
+                        <h3 id="chatTitle">Select a contact</h3>
+                        <p id="chatItemContext" class="chat-context"></p>
+                    </div>
+
+                    <div id="chatMessages" class="chat-messages">
+                        <p class="chat-placeholder">No conversation selected.</p>
+                    </div>
+
+                    <form id="chatForm" class="chat-form">
+                        <input type="text" id="chatInput" placeholder="Type your message..." maxlength="500" required>
+                        <button type="submit" class="btn-primary">Send</button>
+                    </form>
+                </main>
+            </div>
+        </div>
+    </section>
+
+    <script src="js/auth.js"></script>
+    <script src="js/chat.js"></script>
+</body>
+</html>

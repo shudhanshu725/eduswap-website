@@ -1,6 +1,6 @@
 // Load user name
 function loadUserName() {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
     if (currentUser && document.getElementById('userNameDisplay')) {
         document.getElementById('userNameDisplay').textContent = `Hi, ${currentUser.name}`;
     }
@@ -19,7 +19,7 @@ function loadItemForEditing() {
     const editItemId = getEditItemId();
     if (!editItemId) return;
 
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
     const allItems = getAllItems();
     const item = allItems.find(i => String(i.id) === String(editItemId));
 
@@ -77,7 +77,7 @@ if (postItemForm) {
             return;
         }
         
-        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
 
         if (!currentUser) {
             errorMsg.textContent = 'Please login before posting an item';
@@ -149,3 +149,4 @@ document.addEventListener('DOMContentLoaded', () => {
     loadUserName();
     loadItemForEditing();
 });
+

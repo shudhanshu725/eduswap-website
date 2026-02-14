@@ -125,8 +125,10 @@ if (loginForm) {
             successMsg.classList.add('show');
             
             // Store logged in user
-            localStorage.setItem('currentUser', JSON.stringify(userData));
-            localStorage.setItem('isLoggedIn', 'true');
+            sessionStorage.setItem('currentUser', JSON.stringify(userData));
+            localStorage.removeItem('currentUser');
+            sessionStorage.setItem('isLoggedIn', 'true');
+            localStorage.removeItem('isLoggedIn');
             
             // Redirect to dashboard after 1.5 seconds
             setTimeout(() => {
@@ -141,11 +143,11 @@ if (loginForm) {
 
 // Check if user is logged in (for protected pages)
 function checkAuth() {
-    const isLoggedIn = localStorage.getItem('isLoggedIn');
+    const isLoggedIn = sessionStorage.getItem('isLoggedIn') || localStorage.getItem('isLoggedIn');
     const currentPage = window.location.pathname.split('/').pop();
     
     // Protected pages
-    const protectedPages = ['dashboard.html', 'post-item.html'];
+    const protectedPages = ['dashboard.html', 'post-item.html', 'chat.html'];
     
     if (protectedPages.includes(currentPage) && !isLoggedIn) {
         window.location.href = 'login.html';
@@ -154,15 +156,17 @@ function checkAuth() {
 
 // Logout function
 function logout() {
+    sessionStorage.removeItem('isLoggedIn');
     localStorage.removeItem('isLoggedIn');
+    sessionStorage.removeItem('currentUser');
     localStorage.removeItem('currentUser');
     window.location.href = 'index.html';
 }
 
 // Update navigation based on login status
 function updateNavigation() {
-    const isLoggedIn = localStorage.getItem('isLoggedIn');
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    const isLoggedIn = sessionStorage.getItem('isLoggedIn') || localStorage.getItem('isLoggedIn');
+    const currentUser = JSON.parse(sessionStorage.getItem('currentUser')) || JSON.parse(localStorage.getItem('currentUser'));
     const navElement = document.getElementById('mainNav');
     
     if (!navElement) return;
@@ -173,6 +177,7 @@ function updateNavigation() {
             <li><a href="index.html">Home</a></li>
             <li><a href="dashboard.html">Dashboard</a></li>
             <li><a href="browser-item.html">Browse</a></li>
+            <li><a href="chat.html">Chat</a></li>
             <li><a href="post-item.html">Post Item</a></li>
             <li><span style="color: #2ecc71; font-weight: bold;">Hi, ${currentUser.name}</span></li>
             <li><button onclick="logout()" class="btn-primary" style="padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer;">Logout</button></li>
@@ -193,3 +198,5 @@ document.addEventListener('DOMContentLoaded', () => {
     checkAuth();
     updateNavigation();
 });
+
+
